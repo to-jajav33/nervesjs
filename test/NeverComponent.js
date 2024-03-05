@@ -36,6 +36,10 @@ export class NerveComponent extends HTMLElement {
 						this._domParser = new DOMParser();
 						/** @type {HTMLTemplateElement} */
 						const template = this._domParser.parseFromString(htmlStr, 'text/html').querySelector('template');
+						const attrs = template.getAttributeNames();
+						for (const attrName of attrs) {
+							this.setAttribute(attrName, template.getAttribute(attrName));
+						}
 						this.insertBefore(template.content.cloneNode(true), this.firstChild);
 						this.templateReadyLock.unlock();
 					});

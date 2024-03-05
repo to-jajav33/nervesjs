@@ -9,10 +9,17 @@ export class NerveComponent extends HTMLElement {
 		this.constructor.define();
 
 		this.props = new Proxy({}, {
-			get: (_targ, prop) => {
-				const strVal = this.getAttribute(`n-${prop}`);
-				const castVal = this.castProps[prop]?.cast(strVal) || strVal;
+			get: (_targ, paramProp) => {
+				let prop = camelToHyphen(paramProp);
+				const strVal = this.getAttribute(`${prop}`);
+				const castVal = (this.castProps[prop]?.cast) ? this.castProps[prop]?.cast(strVal) : strVal;
+
 				return castVal;
+			},
+			set: (_targ, prop, val) => {
+				this.setAttribute(prop, val);
+				if (this.castProps[prop]?.on) this.castProps[prop]?.on(val);
+				return true;
 			}
 		});
 		this.refs = new Proxy({}, {

@@ -4,7 +4,8 @@ export class ViewMain extends NervioComponent {
 	/**
 	 * @type {{
 	 * 	refSketchPad: import("../sketchPad/SketchPad.js").SketchPad[]
-	 * 	refLabel: HTMLSpanElement[]
+	 * 	refLabel: HTMLSpanElement[],
+	 * 	refNextButton: HTMLButtonElement[]
 	 * }
 	 * }
 	 */
@@ -46,6 +47,8 @@ export class ViewMain extends NervioComponent {
 			this._currentLabelIndex++;
 
 			this.refs.refLabel[0].textContent = this._labels[this._currentLabelIndex];
+
+			this.refs.refNextButton[0].disabled = (this._currentLabelIndex >= this._labels.length - 1);
 
 			sketchPad.reset();
 		})

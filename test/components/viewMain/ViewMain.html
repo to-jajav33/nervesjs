@@ -1,7 +1,17 @@
 <template>
-	<div class="nRow"
+	<div class="nCol"
 		style="align-items: center; justify-content: center;">
 
+		<h2>Data</h2>
+
+		<div class="nRow" style="column-gap: 4px;">
+			<div>
+				Please draw
+				<span n-ref="refLabel" style="font-weight: bolder;">??</span>
+			</div>
+			<button n-ref="refNextButton">Next</button>
+		</div>
+		<br/>
 		<sketch-pad></sketch-pad>
 	</div>
 </template>

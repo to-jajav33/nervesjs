@@ -46,6 +46,8 @@ export class ViewMain extends NervioComponent {
 			this._currentLabelIndex++;
 
 			this.refs.refLabel[0].textContent = this._labels[this._currentLabelIndex];
+
+			sketchPad.reset();
 		})
 	}
 }

@@ -95,6 +95,13 @@ export class SketchPad extends NervioComponent {
 		this.isDrawing = false;
 	}
 
+	reset() {
+		this.paths = [];
+		this.isDrawing = false;
+
+		this.redraw();
+	}
+	
 	redraw() {
 		this.ctx.clearRect(0, 0, this.refs.refCanvas[0].width, this.refs.refCanvas[0].height);
 		this.draw();

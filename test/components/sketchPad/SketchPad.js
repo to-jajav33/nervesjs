@@ -27,10 +27,26 @@ export class SketchPad extends NervioComponent {
 		this.handlePointerUp = this.handlePointerUp.bind(this);
 		this.handlePointerMove = this.handlePointerMove.bind(this);
 
-		this.path = [];
+		this.paths = [];
 		/** @type {CanvasRenderingContext2D} */
 		this.ctx;
 		this.addEventListener('connected', this.handleConnected);
+	}
+
+	draw() {
+		this.ctx.strokeStyle = 'black';
+		this.ctx.lineWidth = 3;
+		this.ctx.lineCap = 'round';
+		this.ctx.lineJoin = 'round';
+		for (let i = 0; i < this.paths.length; i++) {
+			this.ctx.beginPath();
+			this.ctx.moveTo(...this.paths[i][0]);
+			for (let j = 1; j < this.paths[i].length; j++) { 
+				this.ctx.lineTo(...this.paths[i][j]);
+			}
+			this.ctx.stroke();
+		}
+
 	}
 
 	getMousePos(ev) {
@@ -49,10 +65,16 @@ export class SketchPad extends NervioComponent {
 		this.refs.refCanvas[0].addEventListener('pointerdown', this.handlePointerDown);
 		this.refs.refCanvas[0].addEventListener('pointerup', this.handlePointerUp);
 		this.refs.refCanvas[0].addEventListener('pointermove', this.handlePointerMove);
+		this.refs.refUndoButton[0].addEventListener('click', () => {
+			this.paths.pop();
+			this.redraw();
+		});
 	}
 
 	handlePointerDown(ev) {
-		this.path = [this.getMousePos(ev)];
+		this.paths.push([this.getMousePos(ev)]);
+
+		this.draw();
 
 		this.isDrawing = true;
 	}
@@ -60,26 +82,20 @@ export class SketchPad extends NervioComponent {
 	handlePointerMove(ev) {
 		if (!this.isDrawing) return;
 
-		this.path.push(this.getMousePos(ev));
+		const lastPath = this.paths[this.paths.length - 1];
+		lastPath.push(this.getMousePos(ev));
 
-		this.ctx.strokeStyle = 'black';
-		this.ctx.lineWidth = 3;
-		this.ctx.lineCap = 'round';
-		this.ctx.lineJoin = 'round';
-		this.ctx.beginPath();
-		this.ctx.moveTo(...this.path[0]);
-		for (let i = 1; i < this.path.length; i++) {
-			this.ctx.lineTo(...this.path[i]);
-		}
-
-		this.ctx.stroke();
+		this.draw();
 	}
 
 	handlePointerUp(ev) {
 		this.isDrawing = false;
 	}
 
-	
+	redraw() {
+		this.ctx.clearRect(0, 0, this.refs.refCanvas[0].width, this.refs.refCanvas[0].height);
+		this.draw();
+	}
 }
 
 SketchPad.define();

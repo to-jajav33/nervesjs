@@ -1,6 +1,15 @@
 import { NervioComponent } from "../../NervioComponent.js";
 
 export class ViewMain extends NervioComponent {
+	/**
+	 * @type {{
+	 * 	refSketchPad: import("../sketchPad/SketchPad.js").SketchPad[]
+	 * 	refLabel: HTMLSpanElement[]
+	 * }
+	 * }
+	 */
+	refs = this.refs;
+
 	constructor() {
 		super();
 		
@@ -25,6 +34,15 @@ export class ViewMain extends NervioComponent {
 		this.refs.refLabel[0].textContent = this._labels[this._currentLabelIndex];
 	
 		this.refs.refNextButton[0].addEventListener('click', () => {
+			const sketchPad = this.refs.refSketchPad[0];
+			if (!sketchPad?.paths?.length) {
+				alert('Draw something first');
+				return;
+			}
+
+			const currLabel = this._labels[this._currentLabelIndex];
+			this.data.drawings[currLabel] = sketchPad.paths;
+
 			this._currentLabelIndex++;
 
 			this.refs.refLabel[0].textContent = this._labels[this._currentLabelIndex];

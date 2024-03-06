@@ -15,7 +15,9 @@ export class ViewMain extends NervioComponent {
 		super();
 		
 		this._handleConnected = this._handleConnected.bind(this);
-		
+		this._handleDisconnected = this._handleDisconnected.bind(this);
+		this._handleNextButtonClick = this._handleNextButtonClick.bind(this);
+
 		this.data = {
 			username: '',
 			session: crypto.randomUUID(),
@@ -29,29 +31,36 @@ export class ViewMain extends NervioComponent {
 		NervioComponent.import('../sketchPad/SketchPad.js', this.getFileUrl());
 
 		this.addEventListener('connected', this._handleConnected);
+		this.addEventListener('disconnected', this._handleDisconnected);
 	}
 
 	_handleConnected() {
 		this.refs.refLabel[0].textContent = this._labels[this._currentLabelIndex];
 	
-		this.refs.refNextButton[0].addEventListener('click', () => {
-			const sketchPad = this.refs.refSketchPad[0];
-			if (!sketchPad?.paths?.length) {
-				alert('Draw something first');
-				return;
-			}
+		this.refs.refNextButton[0].addEventListener('click', this._handleNextButtonClick);
+	}
+	
+	_handleDisconnected() {
+		this.refs.refNextButton[0].removeEventListener('click', this._handleNextButtonClick);
+	}
 
-			const currLabel = this._labels[this._currentLabelIndex];
-			this.data.drawings[currLabel] = sketchPad.paths;
+	_handleNextButtonClick() {
+		const sketchPad = this.refs.refSketchPad[0];
+		if (!sketchPad?.paths?.length) {
+			alert('Draw something first');
+			return;
+		}
 
-			this._currentLabelIndex++;
+		const currLabel = this._labels[this._currentLabelIndex];
+		this.data.drawings[currLabel] = sketchPad.paths;
 
-			this.refs.refLabel[0].textContent = this._labels[this._currentLabelIndex];
+		this._currentLabelIndex++;
 
-			this.refs.refNextButton[0].disabled = (this._currentLabelIndex >= this._labels.length - 1);
+		this.refs.refLabel[0].textContent = this._labels[this._currentLabelIndex];
 
-			sketchPad.reset();
-		})
+		this.refs.refNextButton[0].disabled = (this._currentLabelIndex >= this._labels.length - 1);
+
+		sketchPad.reset();
 	}
 }
 

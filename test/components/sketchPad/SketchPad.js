@@ -47,6 +47,7 @@ export class SketchPad extends NervioComponent {
 			this.ctx.stroke();
 		}
 
+		this.refs.refUndoButton[0].disabled = this.paths.length == 0;
 	}
 
 	getMousePos(ev) {
@@ -69,6 +70,8 @@ export class SketchPad extends NervioComponent {
 			this.paths.pop();
 			this.redraw();
 		});
+
+		this.redraw();
 	}
 
 	handlePointerDown(ev) {

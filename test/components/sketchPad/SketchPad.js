@@ -1,6 +1,6 @@
-import { NerveComponent } from "../NeverComponent.js";
+import { NervioComponent } from "../../NervioComponent.js";
 
-export class SketchPad extends NerveComponent {
+export class SketchPad extends NervioComponent {
 	castProps = {
 		height: {
 			cast: (val) => {
@@ -20,7 +20,7 @@ export class SketchPad extends NerveComponent {
 		}
 	}
 	constructor() {
-		super({ metaURL: import.meta.url });
+		super();
 		
 		this.handleConnected = this.handleConnected.bind(this);
 		this.handlePointerDown = this.handlePointerDown.bind(this);
@@ -64,6 +64,8 @@ export class SketchPad extends NerveComponent {
 
 		this.ctx.strokeStyle = 'black';
 		this.ctx.lineWidth = 3;
+		this.ctx.lineCap = 'round';
+		this.ctx.lineJoin = 'round';
 		this.ctx.beginPath();
 		this.ctx.moveTo(...this.path[0]);
 		for (let i = 1; i < this.path.length; i++) {

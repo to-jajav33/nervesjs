@@ -1,6 +1,6 @@
 import { Level } from "./Level.js";
 
-export class NerveJs {
+export class Nervio {
 	/**
 	 * 
 	 * @param {number} inputCount 

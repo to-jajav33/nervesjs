@@ -101,7 +101,7 @@ export class NervioComponent extends HTMLElement {
 		// 1 = the caller of getFileUrl (the file path we want to grab)
 		const callerFrame = stackTraceFrames.filter((val) => !val.includes(import.meta.url))[0];
 		// Extract the script's complete url
-		const url = (callerFrame.match(/[a-z]*:\/\/([a-z]|[A-Z]|[0-9]|\s|\\|\/|\.|%)*/)[0]);
+		const url = (callerFrame.match(/[a-z]*:\/\/([a-z]|[A-Z])*:*([0-9])*([a-z]|[A-Z]|[0-9]|\s|\\|\/|\.|%)*/)[0]);
 		return url;
 	}
 

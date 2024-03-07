@@ -56,9 +56,11 @@ export class ViewMain extends NervioComponent {
 
 		this._currentLabelIndex++;
 
-		this.refs.refLabel[0].textContent = this._labels[this._currentLabelIndex];
+		const noMoreLabels = (this._currentLabelIndex > this._labels.length - 1);
+		this.refs.refLabelPrefix[0].textContent = noMoreLabels ? '' : 'Please draw a ';
+		this.refs.refLabel[0].textContent = noMoreLabels ? "DONE" : `${this._labels[this._currentLabelIndex]}`;
 
-		this.refs.refNextButton[0].disabled = (this._currentLabelIndex >= this._labels.length - 1);
+		this.refs.refNextButton[0].disabled = noMoreLabels;
 
 		sketchPad.reset();
 	}

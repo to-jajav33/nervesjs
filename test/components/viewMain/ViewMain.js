@@ -3,10 +3,11 @@ import { NervioComponent } from "../../NervioComponent.js";
 export class ViewMain extends NervioComponent {
 	/**
 	 * @type {{
-	 * 	refSketchPad: import("../sketchPad/SketchPad.js").SketchPad[]
+	 * 	refFileViewerButton: HTMLButtonElement[],
+	 * refSketchPad: import("../sketchPad/SketchPad.js").SketchPad[]
 	 * 	refLabel: HTMLSpanElement[],
-	 * 	refNextButton: HTMLButtonElement[]
-	 * 	refSaveButton: HTMLButtonElement[]
+	 * 	refNextButton: HTMLButtonElement[],
+	 * 	refSaveButton: HTMLButtonElement[],
 	 * }
 	 * }
 	 */
@@ -17,13 +18,19 @@ export class ViewMain extends NervioComponent {
 		
 		this._handleConnected = this._handleConnected.bind(this);
 		this._handleDisconnected = this._handleDisconnected.bind(this);
+		this._handleFileViewerButtonClick = this._handleFileViewerButtonClick.bind(this);
 		this._handleNextButtonClick = this._handleNextButtonClick.bind(this);
 		this._handleSaveButtonClick = this._handleSaveButtonClick.bind(this);
+
+		/** @type {import('../nervioRouter/NervioRouter.js').NervioRouter} */
+		this.router = document.body.querySelector('nervio-router');;
 
 		this.data = {
 			username: '',
 			session: crypto.randomUUID(),
 			drawings: {},
+			/** @type {ImageData|undefined} */
+			image: undefined,
 		};
 
 		this._currentLabelIndex = 0;
@@ -41,13 +48,19 @@ export class ViewMain extends NervioComponent {
 		
 		this.refs.refSaveButton[0].disabled = true;
 		this.refs.refSaveButton[0].style.display = 'none';
-		this.refs.refSaveButton[0].addEventListener('click', this._handleSaveButtonClick);
+		this.refs.refFileViewerButton[0].addEventListener('click', this._handleFileViewerButtonClick);
 		this.refs.refNextButton[0].addEventListener('click', this._handleNextButtonClick);
+		this.refs.refSaveButton[0].addEventListener('click', this._handleSaveButtonClick);
 	}
 	
 	_handleDisconnected() {
 		this.refs.refSaveButton[0].removeEventListener('click', this._handleSaveButtonClick);
 		this.refs.refNextButton[0].removeEventListener('click', this._handleNextButtonClick);
+		this.refs.refFileViewerButton[0].removeEventListener('click', this._handleFileViewerButtonClick);
+	}
+
+	_handleFileViewerButtonClick() {
+		this.router.goTo('/viewer')
 	}
 
 	_handleNextButtonClick() {
@@ -59,6 +72,7 @@ export class ViewMain extends NervioComponent {
 
 		const currLabel = this._labels[this._currentLabelIndex];
 		this.data.drawings[currLabel] = sketchPad.paths;
+		this.data.image = sketchPad.getImageData();
 
 		this._currentLabelIndex++;
 

@@ -19,6 +19,14 @@ export class SketchPad extends NervioComponent {
 			}
 		}
 	}
+
+	/**
+	 * @type {{
+	 * 	refCanvas: HTMLCanvasElement[]
+	 * }}
+	 */
+	refs = this.refs;
+
 	constructor() {
 		super();
 		
@@ -48,6 +56,11 @@ export class SketchPad extends NervioComponent {
 		}
 
 		this.refs.refUndoButton[0].disabled = this.paths.length == 0;
+	}
+
+	getImageData() {
+		const canvas = this.refs.refCanvas[0];
+		return canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
 	}
 
 	getMousePos(ev) {

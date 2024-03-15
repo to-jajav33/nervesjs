@@ -19,8 +19,6 @@ export class NervioRouter extends NervioComponent {
 	}
 
 	async goTo(routePath) {
-		this.lock = lock(`routerGoTo:${this.routerId}`);
-		
 		if (location.hash !== `#${routePath}`) {
 			location.hash = routePath;
 		} else {
@@ -29,7 +27,6 @@ export class NervioRouter extends NervioComponent {
 				oldURL: routePath,
 			});
 		}
-		await this.lock;
 	}
 
 	findRouteInfo(newURL) {
@@ -38,10 +35,10 @@ export class NervioRouter extends NervioComponent {
 		for (let defRoute in this.routes) {
 			let splitDefRoute = defRoute.split('/');
 
-			let i = 0;
 			let found = false;
-			for (let key of splitDefRoute) {
-				found = (splitNewPath[i] == key || key.startsWith(':'));
+			for (let i in splitDefRoute) {
+				const key = splitDefRoute[i];
+				found = (splitNewPath[i] === key || key.startsWith(':'));
 
 				if (!found) break;
 			}
@@ -51,7 +48,10 @@ export class NervioRouter extends NervioComponent {
 	}
 
 	async _handleHashChange(ev) {
-		const { newURL, oldURL } = ev;
+		this.lock = lock(`routerGoTo:${this.routerId}`);
+		let { newURL, oldURL } = ev;
+		newURL = (newURL.includes('#')) ? newURL.split('#')[1] || '/' : newURL;
+
 
 		const routeInfo = this.findRouteInfo(newURL);
 
@@ -66,6 +66,8 @@ export class NervioRouter extends NervioComponent {
 			once: true
 		});
 		pageController.appendChild(pageContent);
+
+		await this.lock;
 	}
 }
 
